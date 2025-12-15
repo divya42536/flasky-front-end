@@ -1,49 +1,61 @@
-// import { useState } from 'react';
-// import reactLogo from './assets/react.svg';
-// import viteLogo from '/vite.svg';
 import './App.css';
 import DATA from './data';
 import CatList from './components/CatList';
+import { useState } from 'react';
+
+const petCat = cat => {
+  // cat.petCount += 1;
+  // return cat;
+  return { ...cat, petCount: cat.petCount + 1 };
+};
+
+const countTotalPets = catData => {
+  // let total = 0;
+  // for (const cat of catData) {
+  //   total += cat.petCount;
+  // }
+  // return total;
+
+  return catData.reduce((acc, cat) => {
+    return acc + cat.petCount;
+  }, 0);
+};
 
 function App() {
+  const [catData, setCatData] = useState(DATA);
+
+  const handlePetCat = id => {
+    // console.log(id);
+    setCatData(catData => {
+      return catData.map(cat => {
+        if (cat.id === id) {
+          return petCat(cat);
+        } else {
+          return cat;
+        }
+      });
+    });
+  };
+
+  const handleUnregisterCat = id => {
+    // console.log(id);
+    setCatData(catData => {
+      return catData.filter(cat => cat.id !== id);
+    });
+  };
+
+  const totalPets = countTotalPets(catData);
 
   return (
     <>
-      <CatList cats={DATA}/>
+      <h2>Total Pets: {totalPets}</h2>
+      <CatList
+        cats={catData}
+        onPetCat={handlePetCat}
+        onUnregisterCat={handleUnregisterCat}
+      />
     </>
   );
 }
 
 export default App;
-
-
-// function App() {
-//   const [count, setCount] = useState(0);
-
-//   return (
-//     <>
-//       <div>
-//         <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank" rel="noreferrer">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.jsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   );
-// }
-
-// export default App;
